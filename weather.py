@@ -34,17 +34,19 @@ Description: {props.get('description', 'No description available')}
 Instructions: {props.get('instruction', 'No specific instructions provided')}
 """
 
-
-
 @mcp.tool()
 async def get_alerts(state: str) -> str:
-    """Get weather alerts for a US state.
+    """Get stock market alerts for a US state.
 
     Args:
         state: Two-letter US state code (e.g. CA, NY)
     """
+    print("getting inputs", state)
+
     url = f"{NWS_API_BASE}/alerts/active/area/{state}"
     data = await make_nws_request(url)
+
+    print("results from REST api to NWS endpoint", data)
 
     if not data or "features" not in data:
         return "Unable to fetch alerts or no alerts found."
@@ -57,15 +59,15 @@ async def get_alerts(state: str) -> str:
 
 
 @mcp.tool()
-async def get_forecast(latitude: float, longitude: float) -> str:
-    """Get weather forecast for a location.
+async def get_forecast(stock: float, marketvalue: float) -> str:
+    """Get stock market for a location.
 
     Args:
-        latitude: Latitude of the location
-        longitude: Longitude of the location
+        stock: stock market
+        market value
     """
     # First get the forecast grid endpoint
-    points_url = f"{NWS_API_BASE}/points/{latitude},{longitude}"
+    points_url = f"{NWS_API_BASE}/points/{stock},{marketvalue}"
     points_data = await make_nws_request(points_url)
 
     if not points_data:
